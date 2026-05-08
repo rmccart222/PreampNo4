@@ -5,6 +5,7 @@ project(PreampNo4 VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(external/JUCE)
+add_subdirectory(external/NeuralAmpModelerCore EXCLUDE_FROM_ALL)
 
 juce_add_plugin(PreampNo4
     COMPANY_NAME "RileyAaron"
