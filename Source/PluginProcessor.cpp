@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include <filesystem>
+#include "NAM/wavenet/model.h"
 
 PreampNo4AudioProcessor::PreampNo4AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -62,18 +63,37 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
                 "C:/Dev/Projects/PreampNo4/Models/preamp_no4_dirty.nam"
             );
 
+            try
+            {
+                static nam::ConfigParserHelper forceWaveNetRegistration(
+                    "WaveNet",
+                    nam::wavenet::create_config
+                );
+            }
+            catch (const std::exception&)
+            {
+                // WaveNet parser was already registered, safe to continue.
+            }
+
             namModel = nam::get_dsp(modelPath);
 
             namLoaded = (namModel != nullptr);
 
             if (namLoaded)
+            {
+                namStatus = "NAM loaded successfully";
                 DBG("NAM model loaded successfully");
+            }
             else
+            {
+                namStatus = "NAM failed to load";
                 DBG("NAM model failed to load");
+            }
         }
         catch (const std::exception& e)
         {
             namLoaded = false;
+            namStatus = "NAM load exception: " + juce::String(e.what());
             DBG("NAM load exception: " << e.what());
         }
     }
@@ -94,6 +114,10 @@ bool PreampNo4AudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts)
 void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ignoreUnused(midiMessages);
+    juce::ScopedNoDenormals noDenormals;
+
+    const auto numSamples = buffer.getNumSamples();
+    const auto numChannels = buffer.getNumChannels();
 
     auto inputDb = parameters.getRawParameterValue("input")->load();
     auto outputDb = parameters.getRawParameterValue("output")->load();
@@ -103,7 +127,36 @@ void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 
     buffer.applyGain(inputGain);
 
-    // NAM processing will go here later
+    if (namLoaded && namModel != nullptr)
+    {
+        namInputBuffer.resize((size_t)numSamples);
+        namOutputBuffer.resize((size_t)numSamples);
+
+        namInputPointers[0] = namInputBuffer.data();
+        namOutputPointers[0] = namOutputBuffer.data();
+
+        for (int sample = 0; sample < numSamples; ++sample)
+        {
+            float monoSample = 0.0f;
+
+            for (int channel = 0; channel < numChannels; ++channel)
+                monoSample += buffer.getSample(channel, sample);
+
+            monoSample /= (float)numChannels;
+
+            namInputBuffer[(size_t)sample] = monoSample;
+        }
+
+        namModel->process(namInputPointers.data(), namOutputPointers.data(), numSamples);
+
+        for (int channel = 0; channel < numChannels; ++channel)
+        {
+            auto* channelData = buffer.getWritePointer(channel);
+
+            for (int sample = 0; sample < numSamples; ++sample)
+                channelData[sample] = namOutputBuffer[(size_t)sample];
+        }
+    }
 
     buffer.applyGain(outputGain);
 }

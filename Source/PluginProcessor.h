@@ -39,10 +39,17 @@ public:
     void setStateInformation(const void* data, int sizeInBytes) override;
 
     juce::AudioProcessorValueTreeState parameters;
+    juce::String namStatus = "NAM not loaded";
 
 private:
     std::unique_ptr<nam::DSP> namModel;
     bool namLoaded = false;
+
+    std::vector<double> namInputBuffer;
+    std::vector<double> namOutputBuffer;
+
+    std::array<double*, 1> namInputPointers;
+    std::array<double*, 1> namOutputPointers;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessor)
 };

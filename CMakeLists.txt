@@ -32,6 +32,7 @@ target_sources(PreampNo4
 
         external/NeuralAmpModelerCore/NAM/activations.cpp
         external/NeuralAmpModelerCore/NAM/container.cpp
+        external/NeuralAmpModelerCore/NAM/conv1d.cpp
         external/NeuralAmpModelerCore/NAM/convnet.cpp
         external/NeuralAmpModelerCore/NAM/get_dsp.cpp
         external/NeuralAmpModelerCore/NAM/dsp.cpp
