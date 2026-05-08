@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(PreampNo4 VERSION 0.1.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(external/JUCE)
 add_subdirectory(external/NeuralAmpModelerCore EXCLUDE_FROM_ALL)
@@ -29,6 +29,17 @@ target_sources(PreampNo4
         Source/PluginProcessor.h
         Source/PluginEditor.cpp
         Source/PluginEditor.h
+
+        external/NeuralAmpModelerCore/NAM/activations.cpp
+        external/NeuralAmpModelerCore/NAM/container.cpp
+        external/NeuralAmpModelerCore/NAM/convnet.cpp
+        external/NeuralAmpModelerCore/NAM/get_dsp.cpp
+        external/NeuralAmpModelerCore/NAM/lstm.cpp
+        external/NeuralAmpModelerCore/NAM/ring_buffer.cpp
+        external/NeuralAmpModelerCore/NAM/util.cpp
+        external/NeuralAmpModelerCore/NAM/wavenet/a2_fast.cpp
+        external/NeuralAmpModelerCore/NAM/wavenet/model.cpp
+        external/NeuralAmpModelerCore/NAM/wavenet/slimmable.cpp
 )
 
 target_link_libraries(PreampNo4
@@ -38,6 +49,13 @@ target_link_libraries(PreampNo4
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
+)
+
+target_include_directories(PreampNo4
+    PRIVATE
+        external/NeuralAmpModelerCore
+        external/NeuralAmpModelerCore/Dependencies/eigen
+        external/NeuralAmpModelerCore/Dependencies/nlohmann
 )
 
 target_compile_definitions(PreampNo4
