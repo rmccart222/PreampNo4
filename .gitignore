@@ -1,0 +1,38 @@
+# Build folders
+build/
+Build/
+Binaries/
+
+# Visual Studio
+.vs/
+*.VC.db
+*.VC.opendb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Compiler/intermediate
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# macOS
+.DS_Store
+
+# Plugin binaries
+*.vst3
+*.component
+*.aaxplugin
+
+# Standalone binaries
+*.exe
