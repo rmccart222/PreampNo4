@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <filesystem>
 
 PreampNo4AudioProcessor::PreampNo4AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -51,6 +52,31 @@ void PreampNo4AudioProcessor::changeProgramName(int index, const juce::String& n
 
 void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
+    juce::ignoreUnused(sampleRate, samplesPerBlock);
+
+    if (namModel == nullptr)
+    {
+        try
+        {
+            const auto modelPath = std::filesystem::path(
+                "C:/Dev/Projects/PreampNo4/Models/preamp_no4_dirty.nam"
+            );
+
+            namModel = nam::get_dsp(modelPath);
+
+            namLoaded = (namModel != nullptr);
+
+            if (namLoaded)
+                DBG("NAM model loaded successfully");
+            else
+                DBG("NAM model failed to load");
+        }
+        catch (const std::exception& e)
+        {
+            namLoaded = false;
+            DBG("NAM load exception: " << e.what());
+        }
+    }
 }
 
 void PreampNo4AudioProcessor::releaseResources()

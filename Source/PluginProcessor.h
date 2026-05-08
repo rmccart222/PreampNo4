@@ -2,6 +2,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/juce_audio_utils.h>
+#include "NAM/get_dsp.h"
 
 class PreampNo4AudioProcessor : public juce::AudioProcessor
 {
@@ -40,5 +41,8 @@ public:
     juce::AudioProcessorValueTreeState parameters;
 
 private:
+    std::unique_ptr<nam::DSP> namModel;
+    bool namLoaded = false;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessor)
 };
