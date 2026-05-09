@@ -18,13 +18,13 @@ PreampNo4AudioProcessor::PreampNo4AudioProcessor()
             std::make_unique<juce::AudioParameterFloat>(
                 "input",
                 "Input",
-                juce::NormalisableRange<float>(-24.0f, 24.0f, 0.1f),
+                juce::NormalisableRange<float>(-20.0f, 20.0f, 0.1f),
                 0.0f),
 
             std::make_unique<juce::AudioParameterFloat>(
                 "output",
                 "Output",
-                juce::NormalisableRange<float>(-24.0f, 24.0f, 0.1f),
+                juce::NormalisableRange<float>(-40.0f, 40.0f, 0.1f),
                 0.0f)
         })
 #endif
@@ -158,7 +158,8 @@ void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
         }
     }
 
-    buffer.applyGain(outputGain);
+    const auto hiddenOutputTrim = juce::Decibels::decibelsToGain(-6.0f);
+    buffer.applyGain(outputGain * hiddenOutputTrim);
 }
 
 bool PreampNo4AudioProcessor::hasEditor() const
