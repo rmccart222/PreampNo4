@@ -42,8 +42,10 @@ public:
     juce::String namStatus = "NAM not loaded";
 
 private:
-    std::unique_ptr<nam::DSP> namModel;
-    bool namLoaded = false;
+    std::unique_ptr<nam::DSP> defaultModel;
+    std::unique_ptr<nam::DSP> boostModel;
+
+    bool modelsLoaded = false;
 
     std::vector<double> namInputBuffer;
     std::vector<double> namOutputBuffer;

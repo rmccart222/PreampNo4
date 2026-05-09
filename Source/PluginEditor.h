@@ -22,8 +22,11 @@ private:
     juce::Label inputLabel;
     juce::Label outputLabel;
 
+    juce::ToggleButton boostButton;
+
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> inputAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> outputAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> boostAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessorEditor)
 };

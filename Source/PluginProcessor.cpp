@@ -25,7 +25,12 @@ PreampNo4AudioProcessor::PreampNo4AudioProcessor()
                 "output",
                 "Output",
                 juce::NormalisableRange<float>(-40.0f, 40.0f, 0.1f),
-                0.0f)
+                0.0f),
+
+            std::make_unique<juce::AudioParameterBool>(
+                "boost",
+                "Boost",
+                false)
         })
 #endif
 {
@@ -61,12 +66,16 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
     namInputPointers[0] = namInputBuffer.data();
     namOutputPointers[0] = namOutputBuffer.data();
 
-    if (namModel == nullptr)
+    if (!modelsLoaded)
     {
         try
         {
-            const auto modelPath = std::filesystem::path(
+            const auto defaultModelPath = std::filesystem::path(
                 "C:/Dev/Projects/PreampNo4/Models/preamp_no4_default.nam"
+            );
+
+            const auto boostModelPath = std::filesystem::path(
+                "C:/Dev/Projects/PreampNo4/Models/preamp_no4_boost.nam"
             );
 
             try
@@ -78,33 +87,23 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
             }
             catch (const std::exception&)
             {
-                // WaveNet parser was already registered, safe to continue.
             }
 
-            namModel = nam::get_dsp(modelPath);
+            defaultModel = nam::get_dsp(defaultModelPath);
+            boostModel = nam::get_dsp(boostModelPath);
 
-            namLoaded = (namModel != nullptr);
+            modelsLoaded = (defaultModel != nullptr && boostModel != nullptr);
 
-            if (namLoaded)
-            {
-                namStatus = "NAM loaded successfully";
-                DBG("NAM model loaded successfully");
-            }
-            else
-            {
-                namStatus = "NAM failed to load";
-                DBG("NAM model failed to load");
-            }
+            namStatus = modelsLoaded ? "NAM models loaded successfully"
+                : "NAM model load failed";
         }
         catch (const std::exception& e)
         {
-            namLoaded = false;
+            modelsLoaded = false;
             namStatus = "NAM load exception: " + juce::String(e.what());
-            DBG("NAM load exception: " << e.what());
         }
     }
 }
-
 void PreampNo4AudioProcessor::releaseResources()
 {
 }
@@ -133,7 +132,10 @@ void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 
     buffer.applyGain(inputGain);
 
-    if (namLoaded && namModel != nullptr)
+    auto boostOn = parameters.getRawParameterValue("boost")->load() > 0.5f;
+    auto* activeModel = boostOn ? boostModel.get() : defaultModel.get();
+
+    if (modelsLoaded && activeModel != nullptr)
     {
         for (int sample = 0; sample < numSamples; ++sample)
         {
@@ -147,7 +149,7 @@ void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
             namInputBuffer[(size_t)sample] = monoSample;
         }
 
-        namModel->process(namInputPointers.data(), namOutputPointers.data(), numSamples);
+        activeModel->process(namInputPointers.data(), namOutputPointers.data(), numSamples);
 
         for (int channel = 0; channel < numChannels; ++channel)
         {

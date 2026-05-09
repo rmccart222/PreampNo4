@@ -31,6 +31,14 @@ PreampNo4AudioProcessorEditor::PreampNo4AudioProcessorEditor(PreampNo4AudioProce
 
     addAndMakeVisible(outputLabel);
     outputLabel.setText("Output", juce::dontSendNotification);
+
+    addAndMakeVisible(boostButton);
+    boostButton.setButtonText("Boost");
+
+    boostAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
+        audioProcessor.parameters,
+        "boost",
+        boostButton);
 }
 
 PreampNo4AudioProcessorEditor::~PreampNo4AudioProcessorEditor()
@@ -61,4 +69,6 @@ void PreampNo4AudioProcessorEditor::resized()
 
     outputSlider.setBounds(220, 100, 100, 100);
     outputLabel.setBounds(240, 200, 80, 20);
+
+    boostButton.setBounds(160, 200, 80, 30);
 }
