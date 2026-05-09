@@ -52,16 +52,6 @@ void PreampNo4AudioProcessorEditor::paint(juce::Graphics& g)
         30,
         juce::Justification::centred,
         1);
-
-    g.setFont(14.0f);
-    g.drawFittedText(
-        audioProcessor.namStatus,
-        0,
-        60,
-        getWidth(),
-        30,
-        juce::Justification::centred,
-        1);
 }
 
 void PreampNo4AudioProcessorEditor::resized()
