@@ -55,6 +55,12 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 {
     juce::ignoreUnused(sampleRate, samplesPerBlock);
 
+    namInputBuffer.resize((size_t)samplesPerBlock);
+    namOutputBuffer.resize((size_t)samplesPerBlock);
+
+    namInputPointers[0] = namInputBuffer.data();
+    namOutputPointers[0] = namOutputBuffer.data();
+
     if (namModel == nullptr)
     {
         try
@@ -129,12 +135,6 @@ void PreampNo4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juc
 
     if (namLoaded && namModel != nullptr)
     {
-        namInputBuffer.resize((size_t)numSamples);
-        namOutputBuffer.resize((size_t)numSamples);
-
-        namInputPointers[0] = namInputBuffer.data();
-        namOutputPointers[0] = namOutputBuffer.data();
-
         for (int sample = 0; sample < numSamples; ++sample)
         {
             float monoSample = 0.0f;
