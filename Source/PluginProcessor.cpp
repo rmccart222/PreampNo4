@@ -66,7 +66,7 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
         try
         {
             const auto modelPath = std::filesystem::path(
-                "C:/Dev/Projects/PreampNo4/Models/preamp_no4_dirty.nam"
+                "C:/Dev/Projects/PreampNo4/Models/preamp_no4_default.nam"
             );
 
             try
