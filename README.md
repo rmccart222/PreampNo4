@@ -56,7 +56,9 @@ cmake --build . --config Release
 
 The plugin is currently functional and processing realtime NAM captures successfully.
 
-GUI work, model browser support, presets, and additional DSP features are planned.
+For best accuracy, use a 48 kHz session sample rate. Internal resampling support is planned.
+
+GUI work, presets, and additional DSP features are planned.
 
 ## License
 
