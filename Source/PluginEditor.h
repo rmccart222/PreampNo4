@@ -7,26 +7,26 @@
 class PreampNo4AudioProcessorEditor : public juce::AudioProcessorEditor
 {
 public:
-    PreampNo4AudioProcessorEditor(PreampNo4AudioProcessor&);
-    ~PreampNo4AudioProcessorEditor() override;
+	PreampNo4AudioProcessorEditor(PreampNo4AudioProcessor&);
+	~PreampNo4AudioProcessorEditor() override;
 
-    void paint(juce::Graphics&) override;
-    void resized() override;
+	void paint(juce::Graphics&) override;
+	void resized() override;
 
 private:
-    PreampNo4AudioProcessor& audioProcessor;
+	PreampNo4AudioProcessor& audioProcessor;
 
-    juce::Slider inputSlider;
-    juce::Slider outputSlider;
+	juce::Slider inputSlider;
+	juce::Slider outputSlider;
 
-    juce::Label inputLabel;
-    juce::Label outputLabel;
+	juce::Label inputLabel;
+	juce::Label outputLabel;
 
-    juce::ToggleButton boostButton;
+	juce::ToggleButton boostButton;
 
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> inputAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> outputAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> boostAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> inputAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> outputAttachment;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> boostAttachment;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessorEditor)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessorEditor)
 };
