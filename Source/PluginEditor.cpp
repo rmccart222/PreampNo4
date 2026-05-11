@@ -1,12 +1,34 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <BinaryData.h>
 
 PreampNo4AudioProcessorEditor::PreampNo4AudioProcessorEditor(PreampNo4AudioProcessor& p)
 	: AudioProcessorEditor(&p), audioProcessor(p)
 {
-	setSize(400, 300);
+	backgroundPanel = juce::ImageCache::getFromMemory(
+		BinaryData::background_panel_png,
+		BinaryData::background_panel_pngSize);
+
+	knobBody = juce::ImageCache::getFromMemory(
+		BinaryData::knob_body_png,
+		BinaryData::knob_body_pngSize);
+
+	knobIndicator = juce::ImageCache::getFromMemory(
+		BinaryData::knob_indicator_png,
+		BinaryData::knob_indicator_pngSize);
+
+	boostOff = juce::ImageCache::getFromMemory(
+		BinaryData::boost_off_png,
+		BinaryData::boost_off_pngSize);
+
+	boostOn = juce::ImageCache::getFromMemory(
+		BinaryData::boost_on_png,
+		BinaryData::boost_on_pngSize);
+
+	setSize(661, 273);
 
 	addAndMakeVisible(inputSlider);
+	inputSlider.setAlpha(0.0f);
 	inputSlider.setSliderStyle(juce::Slider::Rotary);
 	inputSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
 	inputSlider.setDoubleClickReturnValue(true, 0.0);
@@ -18,8 +40,10 @@ PreampNo4AudioProcessorEditor::PreampNo4AudioProcessorEditor(PreampNo4AudioProce
 
 	addAndMakeVisible(inputLabel);
 	inputLabel.setText("Input", juce::dontSendNotification);
+	inputLabel.setVisible(false);
 
 	addAndMakeVisible(outputSlider);
+	outputSlider.setAlpha(0.0f);
 	outputSlider.setSliderStyle(juce::Slider::Rotary);
 	outputSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 60, 20);
 	outputSlider.setDoubleClickReturnValue(true, 0.0);
@@ -31,9 +55,11 @@ PreampNo4AudioProcessorEditor::PreampNo4AudioProcessorEditor(PreampNo4AudioProce
 
 	addAndMakeVisible(outputLabel);
 	outputLabel.setText("Output", juce::dontSendNotification);
+	outputLabel.setVisible(false);
 
 	addAndMakeVisible(boostButton);
 	boostButton.setButtonText("Boost");
+	boostButton.setAlpha(0.0f);
 
 	boostAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
 		audioProcessor.parameters,
@@ -47,28 +73,14 @@ PreampNo4AudioProcessorEditor::~PreampNo4AudioProcessorEditor()
 
 void PreampNo4AudioProcessorEditor::paint(juce::Graphics& g)
 {
-	g.fillAll(juce::Colours::black);
-
-	g.setColour(juce::Colours::white);
-	g.setFont(24.0f);
-
-	g.drawFittedText(
-		"PREAMP No. 4",
-		0,
-		20,
-		getWidth(),
-		30,
-		juce::Justification::centred,
-		1);
+	g.drawImage(backgroundPanel, getLocalBounds().toFloat());
 }
 
 void PreampNo4AudioProcessorEditor::resized()
 {
-	inputSlider.setBounds(80, 100, 100, 100);
-	inputLabel.setBounds(105, 200, 60, 20);
+	inputSlider.setBounds(90, 95, 130, 130);
 
-	outputSlider.setBounds(220, 100, 100, 100);
-	outputLabel.setBounds(240, 200, 80, 20);
+	outputSlider.setBounds(450, 95, 130, 130);
 
-	boostButton.setBounds(160, 200, 80, 30);
+	boostButton.setBounds(300, 120, 70, 70);
 }

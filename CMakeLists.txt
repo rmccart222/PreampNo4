@@ -23,6 +23,15 @@ juce_add_plugin(PreampNo4
     VST3_AUTO_MANIFEST TRUE
 )
 
+juce_add_binary_data(Resources
+    SOURCES
+        Resources/background_panel.png
+        Resources/knob_body.png
+        Resources/knob_indicator.png
+        Resources/boost_off.png
+        Resources/boost_on.png
+)
+
 target_sources(PreampNo4
     PRIVATE
         Source/PluginProcessor.cpp
@@ -46,7 +55,9 @@ target_sources(PreampNo4
 
 target_link_libraries(PreampNo4
     PRIVATE
+        Resources
         juce::juce_audio_utils
+
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags

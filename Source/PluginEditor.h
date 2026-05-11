@@ -16,6 +16,12 @@ public:
 private:
 	PreampNo4AudioProcessor& audioProcessor;
 
+	juce::Image backgroundPanel;
+	juce::Image knobBody;
+	juce::Image knobIndicator;
+	juce::Image boostOff;
+	juce::Image boostOn;
+
 	juce::Slider inputSlider;
 	juce::Slider outputSlider;
 
