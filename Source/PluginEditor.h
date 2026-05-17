@@ -25,6 +25,9 @@ private:
 	juce::Slider inputSlider;
 	juce::Slider outputSlider;
 
+	bool showingInputValue = false;
+	bool showingOutputValue = false;
+
 	juce::Label inputLabel;
 	juce::Label outputLabel;
 
