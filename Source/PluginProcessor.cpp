@@ -176,10 +176,23 @@ juce::AudioProcessorEditor* PreampNo4AudioProcessor::createEditor()
 
 void PreampNo4AudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
+	auto state = parameters.copyState();
+	std::unique_ptr<juce::XmlElement> xml(state.createXml());
+
+	copyXmlToBinary(*xml, destData);
 }
 
 void PreampNo4AudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
+	std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
+
+	if (xmlState != nullptr)
+	{
+		if (xmlState->hasTagName(parameters.state.getType()))
+		{
+			parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+		}
+	}
 }
 
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
