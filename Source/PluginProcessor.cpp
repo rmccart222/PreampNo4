@@ -2,6 +2,7 @@
 #include "PluginEditor.h"
 #include <filesystem>
 #include "NAM/wavenet/model.h"
+#include <cmath>
 
 PreampNo4AudioProcessor::PreampNo4AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -62,6 +63,27 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 
 	currentSampleRate = sampleRate;
 	sampleRateIs48k = juce::approximatelyEqual(sampleRate, 48000.0);
+
+	needsResampling = !sampleRateIs48k;
+
+	const auto maxInternalSamples = static_cast<int>(
+		std::ceil(samplesPerBlock * (internalModelSampleRate / sampleRate)) + 8
+		);
+
+	resampledInputBuffer.resize((size_t)maxInternalSamples);
+	resampledOutputBuffer.resize((size_t)maxInternalSamples);
+
+	resampledInputPointers[0] = resampledInputBuffer.data();
+	resampledOutputPointers[0] = resampledOutputBuffer.data();
+
+	inputResampler.reset();
+	outputResampler.reset();
+
+	hostMonoFloatBuffer.resize((size_t)samplesPerBlock);
+	hostOutputFloatBuffer.resize((size_t)samplesPerBlock);
+
+	resampledInputFloatBuffer.resize((size_t)maxInternalSamples);
+	resampledOutputFloatBuffer.resize((size_t)maxInternalSamples);
 
 	namInputBuffer.resize((size_t)samplesPerBlock);
 	namOutputBuffer.resize((size_t)samplesPerBlock);

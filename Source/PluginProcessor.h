@@ -56,5 +56,22 @@ private:
 	std::array<double*, 1> namInputPointers;
 	std::array<double*, 1> namOutputPointers;
 
+	std::vector<double> resampledInputBuffer;
+	std::vector<double> resampledOutputBuffer;
+
+	std::array<double*, 1> resampledInputPointers;
+	std::array<double*, 1> resampledOutputPointers;
+
+	double internalModelSampleRate = 48000.0;
+	bool needsResampling = false;
+
+	juce::LagrangeInterpolator inputResampler;
+	juce::LagrangeInterpolator outputResampler;
+
+	std::vector<float> hostMonoFloatBuffer;
+	std::vector<float> resampledInputFloatBuffer;
+	std::vector<float> resampledOutputFloatBuffer;
+	std::vector<float> hostOutputFloatBuffer;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PreampNo4AudioProcessor)
 };
