@@ -58,7 +58,10 @@ void PreampNo4AudioProcessor::changeProgramName(int index, const juce::String& n
 
 void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-	juce::ignoreUnused(sampleRate, samplesPerBlock);
+	juce::ignoreUnused(samplesPerBlock);
+
+	currentSampleRate = sampleRate;
+	sampleRateIs48k = juce::approximatelyEqual(sampleRate, 48000.0);
 
 	namInputBuffer.resize((size_t)samplesPerBlock);
 	namOutputBuffer.resize((size_t)samplesPerBlock);
@@ -70,12 +73,21 @@ void PreampNo4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlo
 	{
 		try
 		{
+			const auto modelDirectory = juce::File::getSpecialLocation(
+				juce::File::commonApplicationDataDirectory)
+				.getChildFile("PreampNo4")
+				.getChildFile("Models");
+
 			const auto defaultModelPath = std::filesystem::path(
-				"C:/Dev/Projects/PreampNo4/Models/preamp_no4_default.nam"
+				modelDirectory.getChildFile("preamp_no4_default.nam")
+				.getFullPathName()
+				.toStdString()
 			);
 
 			const auto boostModelPath = std::filesystem::path(
-				"C:/Dev/Projects/PreampNo4/Models/preamp_no4_boost.nam"
+				modelDirectory.getChildFile("preamp_no4_boost.nam")
+				.getFullPathName()
+				.toStdString()
 			);
 
 			try

@@ -209,6 +209,21 @@ void PreampNo4AudioProcessorEditor::paint(juce::Graphics& g)
 			juce::Justification::centred,
 			1);
 	}
+
+	if (!audioProcessor.sampleRateIs48k)
+	{
+		g.setColour(juce::Colour(0xff2B2926).withAlpha(0.85f));
+		g.fillRoundedRectangle(230.0f, 235.0f, 200.0f, 24.0f, 5.0f);
+
+		g.setColour(juce::Colour(0xffE3DED4));
+		g.setFont(13.0f);
+
+		g.drawFittedText(
+			"48 kHz recommended",
+			230, 235, 200, 24,
+			juce::Justification::centred,
+			1);
+	}
 }
 
 void PreampNo4AudioProcessorEditor::resized()

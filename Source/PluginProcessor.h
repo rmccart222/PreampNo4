@@ -41,6 +41,9 @@ public:
 	juce::AudioProcessorValueTreeState parameters;
 	juce::String namStatus = "NAM not loaded";
 
+	double currentSampleRate = 48000.0;
+	bool sampleRateIs48k = true;
+
 private:
 	std::unique_ptr<nam::DSP> defaultModel;
 	std::unique_ptr<nam::DSP> boostModel;
